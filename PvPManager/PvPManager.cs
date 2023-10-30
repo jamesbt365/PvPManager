@@ -17,7 +17,6 @@ public class PvPManager : TerrariaPlugin
 
   public override void Initialize()
   {
-    // command to toggle yourself/others, no arg = self, can ask for a specific user, and a specific state.
     // command to switch your team/others teams
     // Make it possible to force pvp on?
     // Command to force teams?
@@ -35,8 +34,7 @@ public class PvPManager : TerrariaPlugin
     var silent = args.Silent;
     if (silent == true && args.Parameters.Count > 0) {
       if (!player.HasPermission("pvpmanager.pvp.toggle.silent")) {
-        player.SendErrorMessage(
-          "You do not have permission to execute this silently.");
+        player.SendErrorMessage("You do not have permission to execute this silently.");
       }
     }
 
@@ -49,22 +47,26 @@ public class PvPManager : TerrariaPlugin
       return;
     }
 
-    if (args.Parameters.Count == 1 && !player.HasPermission("pvpmanager.pvp.toggle.others")) {
-      string plStr = args.Parameters[0];
-      var matched_players = TSPlayer.FindByNameOrID(plStr);
-      if (matched_players.Count == 0) {
-        args.Player.SendErrorMessage("Player not found!");
-      } else if (matched_players.Count > 1) {
-        args.Player.SendMultipleMatchError(matched_players.Select(p => p.Name));
-      } else {
-        if (Main.player[matched_players[0].Index].hostile) {
-          player.SetPvP(false);
+    if (args.Parameters.Count == 1) {
+      if (player.HasPermission("pvpmanager.pvp.toggle.others")) {
+        string plStr = args.Parameters[0];
+        var matched_players = TSPlayer.FindByNameOrID(plStr);
+        if (matched_players.Count == 0) {
+          args.Player.SendErrorMessage("Player not found!");
+        } else if (matched_players.Count > 1) {
+          args.Player.SendMultipleMatchError(matched_players.Select(p => p.Name));
         } else {
-          player.SetPvP(true);
+          if (Main.player[matched_players[0].Index].hostile) {
+            player.SetPvP(false);
+          } else {
+            player.SetPvP(true);
+          }
+          if (silent == false) {
+            matched_players[0].SendInfoMessage("Your PvP status has been toggled!");
+          }
         }
-        if (silent == false) {
-          matched_players[0].SendInfoMessage("Your PvP status has been toggled!");
-        }
+      } else {
+        player.SendErrorMessage("You do not have permission to use this on others.");
       }
     }
   }
