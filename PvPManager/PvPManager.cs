@@ -1,14 +1,13 @@
 ﻿using TerrariaApi.Server;
 using Terraria;
 using TShockAPI;
-using IL.Terraria.Testing.ChatCommands;
 
 namespace PvPManager;
 
 [ApiVersion(2, 1)]
 public class PvPManager : TerrariaPlugin
 {
-  public override string Name => "Test";
+  public override string Name => "PvPManager";
   public override Version Version => new Version(0, 1, 0);
   public override string Author => "jamesbt365";
   public override string Description => "A plugin to manage the state of PvP or teams for yourself and the server.";
